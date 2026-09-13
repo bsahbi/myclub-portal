@@ -1,0 +1,263 @@
+// This is the Prisma schema file for MyClub Martial Arts Portal
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  CLUB_MANAGER
+  ADMIN
+}
+
+enum AuthProvider {
+  GOOGLE
+  FACEBOOK
+  EMAIL
+}
+
+enum Discipline {
+  JUDO
+  KARATE
+  BJJ
+  TAEKWONDO
+  MUAYTHAI
+  BOXING
+  KICKBOXING
+  MMA
+  KUNGFU
+  WRESTLING
+  AIKIDO
+}
+
+enum CompetitionStatus {
+  UPCOMING
+  LIVE
+  COMPLETED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  name          String
+  avatarUrl     String?
+  provider      AuthProvider   @default(EMAIL)
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relations
+  managedClub   Club?          @relation("ClubManager")
+  watchedClubs  UserWatch[]
+  bookmarks     ArticleBookmark[]
+  inquiries     ClubInquiry[]
+  reviews       ClubReview[]
+}
+
+model Club {
+  id              String         @id @default(uuid())
+  slug            String         @unique
+  nameAr          String
+  nameEn          String
+  nameFr          String
+  descriptionAr   String         @db.Text
+  descriptionEn   String         @db.Text
+  descriptionFr   String         @db.Text
+  primaryDiscipline Discipline
+  allDisciplines  Discipline[]
+  city            String
+  country         String
+  countryCode     String
+  address         String
+  phone           String
+  whatsapp        String?
+  email           String
+  website         String?
+  videoUrl        String?
+  coverImageUrl   String
+  logoUrl         String
+  establishedYear Int
+  isVerified      Boolean        @default(false)
+  isFeatured      Boolean        @default(false)
+  monthlyFee      Decimal?       @db.Decimal(10, 2)
+  currency        String         @default("USD")
+  hasFreeTrial    Boolean        @default(true)
+  viewsCount      Int            @default(0)
+
+  managerId       String?        @unique
+  manager         User?          @relation("ClubManager", fields: [managerId], references: [id])
+
+  instructors     Instructor[]
+  achievements    Achievement[]
+  schedules       Schedule[]
+  articles        Article[]
+  watchers        UserWatch[]
+  inquiries       ClubInquiry[]
+  reviews         ClubReview[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([primaryDiscipline, country])
+}
+
+model Instructor {
+  id           String      @id @default(uuid())
+  clubId       String
+  club         Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  name         String
+  role         String
+  rank         String
+  bioAr        String?     @db.Text
+  bioEn        String?     @db.Text
+  bioFr        String?     @db.Text
+  imageUrl     String?
+  achievements String[]
+}
+
+model Achievement {
+  id          String      @id @default(uuid())
+  clubId      String
+  club        Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  year        Int
+  titleAr     String
+  titleEn     String
+  titleFr     String
+  category    String
+  medal       String      // 'gold', 'silver', 'bronze', 'trophy'
+}
+
+model Schedule {
+  id           String      @id @default(uuid())
+  clubId       String
+  club         Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  dayOfWeek    String
+  timeSlot     String
+  classTitleAr String
+  classTitleEn String
+  classTitleFr String
+  level        String
+  instructor   String
+}
+
+model Article {
+  id              String            @id @default(uuid())
+  slug            String            @unique
+  titleAr         String
+  titleEn         String
+  titleFr         String
+  summaryAr       String            @db.Text
+  summaryEn       String            @db.Text
+  summaryFr       String            @db.Text
+  contentAr       String            @db.Text
+  contentEn       String            @db.Text
+  contentFr       String            @db.Text
+  category        String
+  discipline      Discipline
+  coverImageUrl   String
+  authorName      String
+  authorAvatar    String?
+  clubId          String?
+  club            Club?             @relation(fields: [clubId], references: [id])
+  readTimeMinutes Int               @default(5)
+  views           Int               @default(0)
+  likes           Int               @default(0)
+  bookmarks       ArticleBookmark[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Competition {
+  id                   String            @id @default(uuid())
+  slug                 String            @unique
+  titleAr              String
+  titleEn              String
+  titleFr              String
+  descriptionAr        String            @db.Text
+  descriptionEn        String            @db.Text
+  descriptionFr        String            @db.Text
+  discipline           Discipline
+  status               CompetitionStatus @default(UPCOMING)
+  startDate            DateTime
+  endDate              DateTime
+  city                 String
+  country              String
+  venue                String
+  organizerName        String
+  organizerLogo        String?
+  organizerContact     String?
+  registrationDeadline DateTime
+  entryFee             String
+  prizePool            String?
+  bracketsUrl          String?
+  liveStreamUrl        String?
+  coverImageUrl        String
+  createdAt            DateTime          @default(now())
+}
+
+model UserWatch {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clubId    String
+  club      Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, clubId])
+}
+
+model ArticleBookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, articleId])
+}
+
+model ClubInquiry {
+  id              String   @id @default(uuid())
+  clubId          String
+  club            Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  name            String
+  email           String
+  phone           String
+  discipline      String
+  experienceLevel String
+  preferredTime   String
+  notes           String?
+  status          String   @default("PENDING") // PENDING, CONTACTED, ENROLLED
+  createdAt       DateTime @default(now())
+}
+
+model ClubReview {
+  id        String   @id @default(uuid())
+  clubId    String
+  club      Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      @default(5)
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model AdPlacement {
+  id          String   @id @default(uuid())
+  slotType    String   // 'leaderboard', 'sidebar', 'infeed'
+  adSlotId    String
+  publisherId String
+  isActive    Boolean  @default(true)
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}

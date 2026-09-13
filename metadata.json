@@ -1,0 +1,6 @@
+{
+  "name": "MyClub Martial Arts Portal",
+  "description": "Premier martial arts directory, competitions, news, and clubs portal for the MENA region with multilingual and RTL support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
