@@ -1,7 +1,9 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { Article } from '../types';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   BookOpen,
   Bookmark,
@@ -17,11 +19,11 @@ import {
 } from 'lucide-react';
 
 export const ArticlesView: React.FC = () => {
+  const router = useRouter();
   const {
     articles,
     language,
     t,
-    navigate,
     toggleBookmarkArticle,
     isArticleBookmarked,
   } = useApp();
@@ -93,7 +95,7 @@ export const ArticlesView: React.FC = () => {
       {/* Featured Top Article */}
       {filtered.length > 0 && (
         <div
-          onClick={() => navigate(`/article/${filtered[0].id}`)}
+          onClick={() => router.push(`/article/${filtered[0].id}`)}
           className="group relative rounded-3xl overflow-hidden bg-slate-950 text-white shadow-2xl border border-slate-200 dark:border-slate-800 cursor-pointer grid grid-cols-1 lg:grid-cols-12"
         >
           <div className="lg:col-span-7 relative min-h-[260px] sm:min-h-[360px] overflow-hidden">
@@ -157,7 +159,7 @@ export const ArticlesView: React.FC = () => {
           return (
             <div
               key={art.id}
-              onClick={() => navigate(`/article/${art.id}`)}
+              onClick={() => router.push(`/article/${art.id}`)}
               className="group rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden cursor-pointer"
             >
               <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">

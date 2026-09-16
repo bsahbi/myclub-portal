@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { AdSenseConfigSchema } from '../schemas';
 import { X, CheckCircle2, AlertCircle, Code, ShieldCheck } from 'lucide-react';
 

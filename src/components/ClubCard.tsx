@@ -1,6 +1,8 @@
+'use client';
 import React, { useState } from 'react';
 import { Club } from '../types';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
+import { useRouter } from 'next/navigation';
 import {
   Star,
   MapPin,
@@ -20,7 +22,8 @@ interface ClubCardProps {
 }
 
 export const ClubCard: React.FC<ClubCardProps> = ({ club, onOpenVideo }) => {
-  const { language, t, navigate, toggleWatchClub, isWatchingClub } = useApp();
+  const { language, t, toggleWatchClub, isWatchingClub } = useApp();
+  const router = useRouter();
   const watching = isWatchingClub(club.id);
 
   const countryFlags: Record<string, string> = {
@@ -35,7 +38,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onOpenVideo }) => {
   };
 
   const handleCardClick = () => {
-    navigate(`/club/${club.id}`);
+    router.push(`/club/${club.id}`);
   };
 
   return (
@@ -128,7 +131,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onOpenVideo }) => {
                   {club.name[language] || club.name.en}
                 </h3>
                 {club.verified && (
-                  <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" title="Verified Club" />
+                  <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
                 )}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">

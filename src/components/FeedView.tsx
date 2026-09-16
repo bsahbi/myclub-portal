@@ -1,7 +1,9 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { ClubCard } from './ClubCard';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Sparkles,
   Bell,
@@ -23,10 +25,10 @@ export const FeedView: React.FC = () => {
     notifications,
     language,
     t,
-    navigate,
     hasPushPermission,
     requestPushPermission,
   } = useApp();
+  const router = useRouter();
 
   const [pushStatusMessage, setPushStatusMessage] = useState('');
 
@@ -86,7 +88,7 @@ export const FeedView: React.FC = () => {
             <span>{language === 'ar' ? 'النوادي التي تتابعها' : 'Watched Clubs'} ({watchedClubsList.length})</span>
           </h3>
           <button
-            onClick={() => navigate('/clubs')}
+            onClick={() => router.push('/clubs')}
             className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <span>{language === 'ar' ? 'استكشف نوادي جديدة' : 'Discover More Clubs'}</span>
@@ -106,7 +108,7 @@ export const FeedView: React.FC = () => {
                 : 'Browse our MENA directory and bookmark dojos to personalize your news and schedule stream.'}
             </p>
             <button
-              onClick={() => navigate('/clubs')}
+              onClick={() => router.push('/clubs')}
               className="px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md cursor-pointer"
             >
               {language === 'ar' ? 'تصفح دليل الأندية' : 'Browse Clubs'}
@@ -134,7 +136,7 @@ export const FeedView: React.FC = () => {
           {feedArticles.map((art) => (
             <div
               key={art.id}
-              onClick={() => navigate(`/article/${art.id}`)}
+              onClick={() => router.push(`/article/${art.id}`)}
               className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 transition-all flex flex-col justify-between cursor-pointer space-y-3"
             >
               <div className="flex gap-4">

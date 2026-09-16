@@ -1,6 +1,8 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   ChevronLeft,
   Clock,
@@ -22,12 +24,12 @@ interface ArticleDetailViewProps {
 }
 
 export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ articleId }) => {
+  const router = useRouter();
   const {
     articles,
     clubs,
     language,
     t,
-    navigate,
     toggleBookmarkArticle,
     isArticleBookmarked,
   } = useApp();
@@ -78,7 +80,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ articleId 
       {/* Top Breadcrumb & Actions */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => navigate('/articles')}
+          onClick={() => router.push('/articles')}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
@@ -124,7 +126,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ articleId 
           </span>
           {article.clubId && article.clubName && (
             <button
-              onClick={() => navigate(`/club/${article.clubId}`)}
+              onClick={() => router.push(`/club/${article.clubId}`)}
               className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900 flex items-center gap-1 hover:underline cursor-pointer"
             >
               <Building className="w-3.5 h-3.5" />
@@ -269,7 +271,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ articleId 
             {relatedArticles.map((rel) => (
               <div
                 key={rel.id}
-                onClick={() => navigate(`/article/${rel.id}`)}
+                onClick={() => router.push(`/article/${rel.id}`)}
                 className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 cursor-pointer transition-all flex gap-3"
               >
                 <img

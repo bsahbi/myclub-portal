@@ -1,10 +1,12 @@
+'use client';
 import React from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { Sparkles, Settings, ExternalLink } from 'lucide-react';
 
 interface AdBannerProps {
   type: 'leaderboard' | 'sidebar' | 'infeed';
   className?: string;
+  slot?: string;
 }
 
 export const AdBanner: React.FC<AdBannerProps> = ({ type, className = '' }) => {

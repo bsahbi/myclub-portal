@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { useApp } from '@/lib/app-context';
 import { MemberType, MartialArtDiscipline, NewMemberSubscription } from '@/types';
