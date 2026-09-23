@@ -1,21 +1,25 @@
+FROM node:22-slim AS builder
+
+WORKDIR /app
+
+# Install all deps (dev + prod) to build
+COPY package.json package-lock.json* ./
+RUN npm ci 2>/dev/null || npm install
+
+COPY . .
+ENV NODE_ENV=production
+RUN npm run build
+
+# Production image: Next.js standalone output (official pattern)
 FROM node:22-slim
 
 WORKDIR /app
 
-# Install serve for previewing the built static output
-RUN npm install -g serve
+# Copy standalone server + pruned node_modules + .next/
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static .next/static
 
-COPY package.json package.json bun.lock* ./
-COPY prisma/ prisma/
-
-# Install deps (npm works fine with the bun.lock present)
-RUN npm install --no-audit --no-fund
-
-COPY . .
-
-# Build the SPA
-RUN npm run build
-
-# Serve the dist/ on port 3000
+ENV NODE_ENV=production
 EXPOSE 3000
-CMD ["serve", "dist", "-l", "3000", "--single"]
+
+CMD ["node", "server.js"]

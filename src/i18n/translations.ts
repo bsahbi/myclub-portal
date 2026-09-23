@@ -4,9 +4,10 @@ export const translations: Record<Language, Record<string, string>> = {
   ar: {
     // Brand & Header
     'brand.name': 'ماي كلوب',
-    'brand.tagline': 'بوابة الرياضات الفردية والفنون القتالية الأولى في الشرق الأوسط وشمال أفريقيا',
+    'brand.tagline': 'Everything about your patient',
     'nav.clubs': 'دليل الأندية والأعضاء',
     'nav.competitions': 'البطولات والفعاليات',
+    'nav.home': 'الرئيسية',
     'nav.news': 'الأخبار والمقالات',
     'nav.feed': 'خلاصتي المخصصة',
     'nav.saved': 'المفضلة والمحفوظات',
@@ -241,9 +242,10 @@ export const translations: Record<Language, Record<string, string>> = {
   fr: {
     // Brand & Header
     'brand.name': 'MyClub',
-    'brand.tagline': 'Premier portail des sports individuels & arts martiaux au Moyen-Orient et Afrique du Nord',
+    'brand.tagline': 'Everything about your patient',
     'nav.clubs': 'Annuaire & Membres',
     'nav.competitions': 'Compétitions & Événements',
+    'nav.home': 'Accueil',
     'nav.news': 'Articles & Actualités',
     'nav.feed': 'Mon Fil Personnalisé',
     'nav.saved': 'Favoris & Hors-Ligne',
@@ -478,9 +480,10 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Brand & Header
     'brand.name': 'MyClub',
-    'brand.tagline': 'Premier individual sports & combat arts portal in the MENA region',
+    'brand.tagline': 'Everything about your patient',
     'nav.clubs': 'Directory & Members',
     'nav.competitions': 'Competitions & Events',
+    'nav.home': 'Home',
     'nav.news': 'News & Articles',
     'nav.feed': 'Personalized Feed',
     'nav.saved': 'Saved & Offline',

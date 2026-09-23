@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { Competition, CompetitionStatus, MartialArtDiscipline } from '../types';
 import { AdBanner } from './AdBanner';
 import {
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const CompetitionsView: React.FC = () => {
-  const { competitions, language, t, navigate } = useApp();
+  const { competitions, language, t,} = useApp();
   const [selectedStatus, setSelectedStatus] = useState<CompetitionStatus | 'all'>('all');
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');

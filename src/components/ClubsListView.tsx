@@ -1,7 +1,9 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { ClubCard } from './ClubCard';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   Filter,
@@ -34,8 +36,8 @@ export const ClubsListView: React.FC = () => {
     setSubscribeModalOpen,
     language,
     t,
-    navigate,
   } = useApp();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>('all');
@@ -308,7 +310,7 @@ export const ClubsListView: React.FC = () => {
       </div>
 
       {/* Leaderboard Ad Banner */}
-      <AdBanner slot="leaderboard" />
+      <AdBanner type="leaderboard" slot="leaderboard" />
 
       {/* Content depending on Active Tab */}
 
@@ -343,7 +345,7 @@ export const ClubsListView: React.FC = () => {
                   />
                   {index === 2 && (
                     <div className="col-span-full">
-                      <AdBanner slot="inFeed" />
+                      <AdBanner type="infeed" slot="inFeed" />
                     </div>
                   )}
                 </React.Fragment>
@@ -443,7 +445,7 @@ export const ClubsListView: React.FC = () => {
                       </div>
 
                       <button
-                        onClick={() => navigate(`/coach/${coach.id}`)}
+                        onClick={() => router.push(`/coach/${coach.id}`)}
                         className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-xs font-bold rounded-xl shadow transition"
                       >
                         <span>{t('action.viewDetails')}</span>
@@ -561,7 +563,7 @@ export const ClubsListView: React.FC = () => {
                       </span>
 
                       <button
-                        onClick={() => navigate(`/athlete/${athlete.id}`)}
+                        onClick={() => router.push(`/athlete/${athlete.id}`)}
                         className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 text-xs font-bold rounded-xl shadow transition"
                       >
                         <span>{t('action.viewDetails')}</span>
@@ -655,7 +657,7 @@ export const ClubsListView: React.FC = () => {
                       </span>
 
                       <button
-                        onClick={() => navigate(`/organizer/${org.id}`)}
+                        onClick={() => router.push(`/organizer/${org.id}`)}
                         className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white text-xs font-bold rounded-xl shadow transition"
                       >
                         <span>{t('action.viewDetails')}</span>

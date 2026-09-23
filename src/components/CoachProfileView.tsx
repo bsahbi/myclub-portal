@@ -1,6 +1,8 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Star,
   MapPin,
@@ -27,7 +29,8 @@ interface CoachProfileViewProps {
 }
 
 export const CoachProfileView: React.FC<CoachProfileViewProps> = ({ coachId }) => {
-  const { coaches, language, t, navigate } = useApp();
+  const { coaches, language, t,} = useApp();
+  const router = useRouter();
 
   const coach = coaches.find((c) => c.id === coachId || c.slug === coachId) || coaches[0];
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'certifications' | 'achievements'>('overview');
@@ -72,7 +75,7 @@ export const CoachProfileView: React.FC<CoachProfileViewProps> = ({ coachId }) =
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Coach profile not found</h2>
         <button
-          onClick={() => navigate('/clubs')}
+          onClick={() => router.push('/clubs')}
           className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition shadow"
         >
           {t('action.reset')}
@@ -87,7 +90,7 @@ export const CoachProfileView: React.FC<CoachProfileViewProps> = ({ coachId }) =
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <button
-            onClick={() => navigate('/clubs')}
+            onClick={() => router.push('/clubs')}
             className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
           >
             <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
@@ -227,7 +230,7 @@ export const CoachProfileView: React.FC<CoachProfileViewProps> = ({ coachId }) =
                   <Building className="w-4 h-4 text-red-600 dark:text-red-400" />
                   <span>{t('athlete.club')}</span>
                   <button
-                    onClick={() => navigate(`/club/${coach.clubAffiliation?.id}`)}
+                    onClick={() => router.push(`/club/${coach.clubAffiliation?.id}`)}
                     className="font-semibold text-red-600 dark:text-red-400 hover:underline"
                   >
                     {coach.clubAffiliation.name[language]}
@@ -391,7 +394,7 @@ export const CoachProfileView: React.FC<CoachProfileViewProps> = ({ coachId }) =
             )}
 
             {/* Ad Banner */}
-            <AdBanner slot="inFeed" className="my-6" />
+            <AdBanner type="infeed" slot="inFeed" className="my-6" />
           </div>
 
           {/* Right Column: Rate Card & Booking CTA */}

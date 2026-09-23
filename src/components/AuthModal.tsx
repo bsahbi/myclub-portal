@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { LoginSchema, RegisterSchema } from '../schemas';
 import { X, Lock, Mail, User as UserIcon, AlertCircle } from 'lucide-react';
 

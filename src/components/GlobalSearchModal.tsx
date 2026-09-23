@@ -1,6 +1,8 @@
+'use client';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { Club, Coach, Athlete, Article, MartialArtDiscipline } from '../types';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   X,
@@ -43,8 +45,8 @@ export const GlobalSearchModal: React.FC = () => {
     articles,
     language,
     t,
-    navigate,
   } = useApp();
+  const router = useRouter();
 
   const [query, setQuery] = useState('');
   const [selectedType, setSelectedType] = useState<SearchFilterType>('all');
@@ -274,7 +276,7 @@ export const GlobalSearchModal: React.FC = () => {
   // Handle item navigation
   const handleSelect = (item: SearchResultItem) => {
     setSearchModalOpen(false);
-    navigate(item.route);
+    router.push(item.route);
   };
 
   // Keyboard Navigation: Up, Down, Enter, Esc
@@ -476,7 +478,7 @@ export const GlobalSearchModal: React.FC = () => {
                 <div
                   onClick={() => {
                     setSearchModalOpen(false);
-                    navigate('/clubs');
+                    router.push('/clubs');
                   }}
                   className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:border-amber-500 cursor-pointer transition text-center space-y-1"
                 >
@@ -490,7 +492,7 @@ export const GlobalSearchModal: React.FC = () => {
                 <div
                   onClick={() => {
                     setSearchModalOpen(false);
-                    navigate('/clubs');
+                    router.push('/clubs');
                   }}
                   className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:border-red-500 cursor-pointer transition text-center space-y-1"
                 >
@@ -504,7 +506,7 @@ export const GlobalSearchModal: React.FC = () => {
                 <div
                   onClick={() => {
                     setSearchModalOpen(false);
-                    navigate('/clubs');
+                    router.push('/clubs');
                   }}
                   className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:border-emerald-500 cursor-pointer transition text-center space-y-1"
                 >
@@ -518,7 +520,7 @@ export const GlobalSearchModal: React.FC = () => {
                 <div
                   onClick={() => {
                     setSearchModalOpen(false);
-                    navigate('/articles');
+                    router.push('/articles');
                   }}
                   className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:border-sky-500 cursor-pointer transition text-center space-y-1"
                 >

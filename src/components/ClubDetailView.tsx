@@ -1,8 +1,10 @@
+'use client';
 import React, { useState } from 'react';
 import { Club, Article } from '../types';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { InquirySchema } from '../schemas';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Star,
   MapPin,
@@ -37,13 +39,13 @@ export const ClubDetailView: React.FC<ClubDetailViewProps> = ({ clubId }) => {
     articles,
     language,
     t,
-    navigate,
     toggleWatchClub,
     isWatchingClub,
     submitInquiry,
     toggleBookmarkArticle,
     isArticleBookmarked,
   } = useApp();
+  const router = useRouter();
 
   const club = clubs.find((c) => c.id === clubId || c.slug === clubId) || clubs[0];
   const clubArticles = articles.filter((a) => a.clubId === club.id);
@@ -112,7 +114,7 @@ export const ClubDetailView: React.FC<ClubDetailViewProps> = ({ clubId }) => {
       {/* Back button & Breadcrumbs */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => navigate('/clubs')}
+          onClick={() => router.push('/clubs')}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
@@ -446,7 +448,7 @@ export const ClubDetailView: React.FC<ClubDetailViewProps> = ({ clubId }) => {
                 clubArticles.map((art) => (
                   <div
                     key={art.id}
-                    onClick={() => navigate(`/article/${art.id}`)}
+                    onClick={() => router.push(`/article/${art.id}`)}
                     className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 cursor-pointer transition-all flex flex-col sm:flex-row gap-4"
                   >
                     <img

@@ -1,6 +1,8 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Bookmark,
   BookmarkCheck,
@@ -19,8 +21,8 @@ export const SavedOfflineView: React.FC = () => {
     toggleBookmarkArticle,
     language,
     t,
-    navigate,
   } = useApp();
+  const router = useRouter();
 
   const [simulatedOffline, setSimulatedOffline] = useState(false);
 
@@ -85,7 +87,7 @@ export const SavedOfflineView: React.FC = () => {
               : 'Click the bookmark icon on any technique or news article to save it for offline reading on your device.'}
           </p>
           <button
-            onClick={() => navigate('/articles')}
+            onClick={() => router.push('/articles')}
             className="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md cursor-pointer"
           >
             {language === 'ar' ? 'استعراض المقالات' : 'Browse Articles'}
@@ -116,7 +118,7 @@ export const SavedOfflineView: React.FC = () => {
                     {art.category}
                   </span>
                   <h4
-                    onClick={() => navigate(`/article/${art.id}`)}
+                    onClick={() => router.push(`/article/${art.id}`)}
                     className="font-bold text-base text-slate-900 dark:text-slate-100 hover:text-amber-600 cursor-pointer line-clamp-2"
                   >
                     {art.title[language] || art.title.en}
@@ -128,7 +130,7 @@ export const SavedOfflineView: React.FC = () => {
 
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <button
-                    onClick={() => navigate(`/article/${art.id}`)}
+                    onClick={() => router.push(`/article/${art.id}`)}
                     className="px-3.5 py-1.5 rounded-xl bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 font-bold text-xs cursor-pointer flex items-center gap-1"
                   >
                     <span>{t('action.readMore')}</span>

@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   Language,
@@ -42,8 +43,6 @@ interface AppContextType {
   hasPushPermission: boolean;
   adSettings: AdSettings;
   updateAdSettings: (settings: Partial<AdSettings>) => void;
-  currentRoute: string;
-  navigate: (path: string) => void;
   clubs: Club[];
   coaches: Coach[];
   athletes: Athlete[];
@@ -91,16 +90,18 @@ const DEFAULT_AD_SETTINGS: AdSettings = {
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Language & RTL
   const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'ar';
     const saved = localStorage.getItem('myclub_lang');
     return (saved as Language) || 'ar';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('myclub_lang', lang);
+    if (typeof window !== 'undefined') localStorage.setItem('myclub_lang', lang);
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [language]);
@@ -111,16 +112,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Theme Management (Light, Dark, System)
   const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof window === 'undefined') return 'system';
     const saved = localStorage.getItem('myclub_theme');
     return (saved as ThemeMode) || 'system';
   });
 
   const setTheme = (mode: ThemeMode) => {
     setThemeState(mode);
-    localStorage.setItem('myclub_theme', mode);
+    if (typeof window !== 'undefined') localStorage.setItem('myclub_theme', mode);
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const root = document.documentElement;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -147,31 +150,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [theme]);
 
-  // Routing with URL Hash and deep-links
-  const [currentRoute, setCurrentRoute] = useState<string>(() => {
-    if (typeof window !== 'undefined' && window.location.hash) {
-      return window.location.hash.replace('#', '') || '/';
-    }
-    return '/';
-  });
-
-  const navigate = (path: string) => {
-    setCurrentRoute(path);
-    window.location.hash = path;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      setCurrentRoute(hash || '/');
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
   // Authentication State
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return DEFAULT_USER;
     const saved = localStorage.getItem('myclub_user');
     if (saved) {
       try {
@@ -189,6 +170,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Global keyboard shortcut for search (Cmd+K / Ctrl+K)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
@@ -215,7 +197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       favoriteCompetitions: ['comp-dubai-grand-slam-2026'],
     };
     setCurrentUser(newUser);
-    localStorage.setItem('myclub_user', JSON.stringify(newUser));
+    if (typeof window !== 'undefined') localStorage.setItem('myclub_user', JSON.stringify(newUser));
     setAuthModalOpen(false);
   };
 
@@ -232,17 +214,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       favoriteCompetitions: [],
     };
     setCurrentUser(newUser);
-    localStorage.setItem('myclub_user', JSON.stringify(newUser));
+    if (typeof window !== 'undefined') localStorage.setItem('myclub_user', JSON.stringify(newUser));
     setAuthModalOpen(false);
   };
 
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('myclub_user');
+    if (typeof window !== 'undefined') localStorage.removeItem('myclub_user');
   };
 
   // Watched Clubs
   const [watchedClubs, setWatchedClubs] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return ['club-atlas-bjj', 'club-dubai-combat-club'];
     const saved = localStorage.getItem('myclub_watched_clubs');
     return saved ? JSON.parse(saved) : ['club-atlas-bjj', 'club-dubai-combat-club'];
   });
@@ -250,7 +233,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleWatchClub = (clubId: string) => {
     setWatchedClubs((prev) => {
       const next = prev.includes(clubId) ? prev.filter((id) => id !== clubId) : [...prev, clubId];
-      localStorage.setItem('myclub_watched_clubs', JSON.stringify(next));
+      if (typeof window !== 'undefined') localStorage.setItem('myclub_watched_clubs', JSON.stringify(next));
       return next;
     });
   };
@@ -259,6 +242,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Bookmarked Articles with local offline sync
   const [bookmarkedArticles, setBookmarkedArticles] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return ['art-bjj-guard-retention-mena'];
     const saved = localStorage.getItem('myclub_bookmarked_articles');
     return saved ? JSON.parse(saved) : ['art-bjj-guard-retention-mena'];
   });
@@ -266,7 +250,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleBookmarkArticle = (articleId: string) => {
     setBookmarkedArticles((prev) => {
       const next = prev.includes(articleId) ? prev.filter((id) => id !== articleId) : [...prev, articleId];
-      localStorage.setItem('myclub_bookmarked_articles', JSON.stringify(next));
+      if (typeof window !== 'undefined') localStorage.setItem('myclub_bookmarked_articles', JSON.stringify(next));
       return next;
     });
   };
@@ -278,42 +262,45 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Notifications
   const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
+    if (typeof window === 'undefined') return mockNotifications;
     const saved = localStorage.getItem('myclub_notifications');
     return saved ? JSON.parse(saved) : mockNotifications;
   });
 
   const [hasPushPermission, setHasPushPermission] = useState<boolean>(() => {
-    return typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted';
+    if (typeof window === 'undefined') return false;
+    return 'Notification' in window && Notification.permission === 'granted';
   });
 
   const markAllNotificationsRead = () => {
     setNotifications((prev) => {
       const updated = prev.map((n) => ({ ...n, read: true }));
-      localStorage.setItem('myclub_notifications', JSON.stringify(updated));
+      if (typeof window !== 'undefined') localStorage.setItem('myclub_notifications', JSON.stringify(updated));
       return updated;
     });
   };
 
   const requestPushPermission = async (): Promise<boolean> => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      try {
-        const res = await Notification.requestPermission();
-        const granted = res === 'granted';
-        setHasPushPermission(granted);
-        return granted;
-      } catch {
-        setHasPushPermission(true); // simulated in sandboxed environment
-        return true;
-      }
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setHasPushPermission(true);
+      return true;
     }
-    setHasPushPermission(true);
-    return true;
+    try {
+      const res = await Notification.requestPermission();
+      const granted = res === 'granted';
+      setHasPushPermission(granted);
+      return granted;
+    } catch {
+      setHasPushPermission(true);
+      return true;
+    }
   };
 
   const unreadNotificationCount = notifications.filter((n) => !n.read).length;
 
   // Monetization / AdSense Settings
   const [adSettings, setAdSettings] = useState<AdSettings>(() => {
+    if (typeof window === 'undefined') return DEFAULT_AD_SETTINGS;
     const saved = localStorage.getItem('myclub_ad_settings');
     return saved ? JSON.parse(saved) : DEFAULT_AD_SETTINGS;
   });
@@ -321,13 +308,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateAdSettings = (newSettings: Partial<AdSettings>) => {
     setAdSettings((prev) => {
       const updated = { ...prev, ...newSettings };
-      localStorage.setItem('myclub_ad_settings', JSON.stringify(updated));
+      if (typeof window !== 'undefined') localStorage.setItem('myclub_ad_settings', JSON.stringify(updated));
       return updated;
     });
   };
 
   // Inquiries for Club Managers
   const [inquiries, setInquiries] = useState<(InquiryFormInput & { id: string; clubId: string; date: string })[]>(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('myclub_inquiries');
     return saved
       ? JSON.parse(saved)
@@ -361,21 +349,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Directory & Members Entities State
   const [clubs, setClubs] = useState<Club[]>(() => {
+    if (typeof window === 'undefined') return mockClubs;
     const saved = localStorage.getItem('myclub_clubs');
     return saved ? JSON.parse(saved) : mockClubs;
   });
 
   const [coaches, setCoaches] = useState<Coach[]>(() => {
+    if (typeof window === 'undefined') return mockCoaches;
     const saved = localStorage.getItem('myclub_coaches');
     return saved ? JSON.parse(saved) : mockCoaches;
   });
 
   const [athletes, setAthletes] = useState<Athlete[]>(() => {
+    if (typeof window === 'undefined') return mockAthletes;
     const saved = localStorage.getItem('myclub_athletes');
     return saved ? JSON.parse(saved) : mockAthletes;
   });
 
   const [organizers, setOrganizers] = useState<EventOrganizer[]>(() => {
+    if (typeof window === 'undefined') return mockOrganizers;
     const saved = localStorage.getItem('myclub_organizers');
     return saved ? JSON.parse(saved) : mockOrganizers;
   });
@@ -434,7 +426,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
       setCoaches((prev) => {
         const next = [newCoach, ...prev];
-        localStorage.setItem('myclub_coaches', JSON.stringify(next));
+        if (typeof window !== 'undefined') localStorage.setItem('myclub_coaches', JSON.stringify(next));
         return next;
       });
       targetRoute = `/coach/${newCoach.id}`;
@@ -482,7 +474,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
       setAthletes((prev) => {
         const next = [newAthlete, ...prev];
-        localStorage.setItem('myclub_athletes', JSON.stringify(next));
+        if (typeof window !== 'undefined') localStorage.setItem('myclub_athletes', JSON.stringify(next));
         return next;
       });
       targetRoute = `/athlete/${newAthlete.id}`;
@@ -503,7 +495,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         },
         description: {
           ar: data.bio || 'جهة تنظيمية للبطولات والفعاليات الرياضية التنافسية.',
-          fr: data.bio || 'Organisation sportive et promotion d’événements.',
+          fr: data.bio || "Organisation sportive et promotion d'evenements.",
           en: data.bio || 'Sanctioning body and combat sports event organizer.',
         },
         disciplines: [data.discipline],
@@ -524,7 +516,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
       setOrganizers((prev) => {
         const next = [newOrganizer, ...prev];
-        localStorage.setItem('myclub_organizers', JSON.stringify(next));
+        if (typeof window !== 'undefined') localStorage.setItem('myclub_organizers', JSON.stringify(next));
         return next;
       });
       targetRoute = `/organizer/${newOrganizer.id}`;
@@ -581,7 +573,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
       setClubs((prev) => {
         const next = [newClub, ...prev];
-        localStorage.setItem('myclub_clubs', JSON.stringify(next));
+        if (typeof window !== 'undefined') localStorage.setItem('myclub_clubs', JSON.stringify(next));
         return next;
       });
       targetRoute = `/club/${newClub.id}`;
@@ -599,7 +591,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setInquiries((prev) => {
       const next = [newInquiry, ...prev];
-      localStorage.setItem('myclub_inquiries', JSON.stringify(next));
+      if (typeof window !== 'undefined') localStorage.setItem('myclub_inquiries', JSON.stringify(next));
       return next;
     });
     return true;
@@ -631,8 +623,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         hasPushPermission,
         adSettings,
         updateAdSettings,
-        currentRoute,
-        navigate,
         clubs,
         coaches,
         athletes,

@@ -1,7 +1,9 @@
+'use client';
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '@/lib/app-context';
 import { ClubCard } from './ClubCard';
 import { AdBanner } from './AdBanner';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   Trophy,
@@ -37,8 +39,8 @@ export const HomeView: React.FC = () => {
     setActiveDirectoryTab,
     language,
     t,
-    navigate,
   } = useApp();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
@@ -61,7 +63,7 @@ export const HomeView: React.FC = () => {
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/clubs');
+    router.push('/clubs');
   };
 
   return (
@@ -116,7 +118,7 @@ export const HomeView: React.FC = () => {
             {disciplines.map((d) => (
               <button
                 key={d.key}
-                onClick={() => navigate('/clubs')}
+                onClick={() => router.push('/clubs')}
                 className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>{d.icon}</span>
@@ -147,7 +149,7 @@ export const HomeView: React.FC = () => {
             </div>
 
             <button
-              onClick={() => navigate('/competitions')}
+              onClick={() => router.push('/competitions')}
               className="px-4 py-2 rounded-xl bg-white text-rose-950 hover:bg-rose-100 font-bold text-xs shadow-md shrink-0 flex items-center gap-1.5 cursor-pointer"
             >
               <Video className="w-4 h-4 text-rose-600" />
@@ -174,7 +176,7 @@ export const HomeView: React.FC = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate('/clubs')}
+            onClick={() => router.push('/clubs')}
             className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <span>{t('nav.clubs')}</span>
@@ -209,7 +211,7 @@ export const HomeView: React.FC = () => {
             <button
               onClick={() => {
                 setActiveDirectoryTab('coaches');
-                navigate('/clubs');
+                router.push('/clubs');
               }}
               className="text-xs sm:text-sm font-bold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1 cursor-pointer"
             >
@@ -272,7 +274,7 @@ export const HomeView: React.FC = () => {
                     {coach.hourlyRate ? `$${coach.hourlyRate.amount}/hr` : 'Verified Coach'}
                   </span>
                   <button
-                    onClick={() => navigate(`/coach/${coach.id}`)}
+                    onClick={() => router.push(`/coach/${coach.id}`)}
                     className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
                   >
                     <span>{t('action.viewDetails')}</span>
@@ -333,7 +335,7 @@ export const HomeView: React.FC = () => {
                     {t(`discipline.${athlete.discipline}`)}
                   </span>
                   <button
-                    onClick={() => navigate(`/athlete/${athlete.id}`)}
+                    onClick={() => router.push(`/athlete/${athlete.id}`)}
                     className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
                   >
                     <span>{t('action.viewDetails')}</span>
@@ -361,7 +363,7 @@ export const HomeView: React.FC = () => {
           {disciplines.map((d) => (
             <div
               key={d.key}
-              onClick={() => navigate('/clubs')}
+              onClick={() => router.push('/clubs')}
               className="group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 hover:shadow-lg transition-all text-center cursor-pointer space-y-2"
             >
               <div className="text-3xl group-hover:scale-110 transition-transform">
@@ -395,7 +397,7 @@ export const HomeView: React.FC = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate('/competitions')}
+            onClick={() => router.push('/competitions')}
             className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <span>{t('filter.status.all')}</span>
@@ -407,7 +409,7 @@ export const HomeView: React.FC = () => {
           {upcomingCompetitions.map((comp) => (
             <div
               key={comp.id}
-              onClick={() => navigate('/competitions')}
+              onClick={() => router.push('/competitions')}
               className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 transition-all flex flex-col sm:flex-row gap-4 cursor-pointer"
             >
               <img
@@ -461,7 +463,7 @@ export const HomeView: React.FC = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate('/articles')}
+            onClick={() => router.push('/articles')}
             className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <span>{language === 'ar' ? 'جميع المقالات' : 'Read All'}</span>
@@ -473,7 +475,7 @@ export const HomeView: React.FC = () => {
           {recentArticles.map((art) => (
             <div
               key={art.id}
-              onClick={() => navigate(`/article/${art.id}`)}
+              onClick={() => router.push(`/article/${art.id}`)}
               className="group rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between cursor-pointer"
             >
               <div className="relative h-44 w-full overflow-hidden">
