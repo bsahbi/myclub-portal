@@ -1,6 +1,7 @@
+import './globals.css';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import Providers from '@/lib/providers';
+import RootClientWrapper from '@/components/RootClientWrapper';
 
 export const metadata: Metadata = {
   title: { default: 'MyClub — MENA Martial Arts Portal', template: '%s | MyClub' },
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <Providers>{children}</Providers>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <RootClientWrapper>{children}</RootClientWrapper>
       </body>
     </html>
   );
